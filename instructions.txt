@@ -1,0 +1,36 @@
+# tf_records, train_p, ssd_mobilenet_v1_coco_2017_11_17, faster_rcnn_inception_v2_coco_2018_01_28
+# https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10
+# https://github.com/tensorflow/models
+
+conda env remove -n tesis_msc
+conda create -n tesis_msc python=3.6 -y
+activate tesis_msc
+python -m pip install --upgrade pip
+pip install tensorflow==1.12 tensorboard
+# pip install --ignore-installed --upgrade tensorflow-gpu==1.12 ####
+conda install -c anaconda protobuf -y
+pip install pillow lxml Cython contextlib2 jupyter matplotlib pandas opencv-python
+
+set PYTHONPATH=C:\Users\jucas\Documents\commerce_pixel\models;C:\Users\jucas\Documents\commerce_pixel\models\research;C:\Users\jucas\Documents\commerce_pixel\models\research\slim
+#set PYTHONPATH=C:\Users\rise\Documents\commerce_pixel\models;C:\Users\rise\Documents\commerce_pixel\models\research;C:\Users\rise\Documents\commerce_pixel\models\research\slim
+
+cd Documents\commerce_pixel\models\research
+
+protoc --python_out=. .\object_detection\protos\anchor_generator.proto .\object_detection\protos\argmax_matcher.proto .\object_detection\protos\bipartite_matcher.proto .\object_detection\protos\box_coder.proto .\object_detection\protos\box_predictor.proto .\object_detection\protos\eval.proto .\object_detection\protos\faster_rcnn.proto .\object_detection\protos\faster_rcnn_box_coder.proto .\object_detection\protos\grid_anchor_generator.proto .\object_detection\protos\hyperparams.proto .\object_detection\protos\image_resizer.proto .\object_detection\protos\input_reader.proto .\object_detection\protos\losses.proto .\object_detection\protos\matcher.proto .\object_detection\protos\mean_stddev_box_coder.proto .\object_detection\protos\model.proto .\object_detection\protos\optimizer.proto .\object_detection\protos\pipeline.proto .\object_detection\protos\post_processing.proto .\object_detection\protos\preprocessor.proto .\object_detection\protos\region_similarity_calculator.proto .\object_detection\protos\square_box_coder.proto .\object_detection\protos\ssd.proto .\object_detection\protos\ssd_anchor_generator.proto .\object_detection\protos\string_int_label_map.proto .\object_detection\protos\train.proto .\object_detection\protos\keypoint_box_coder.proto .\object_detection\protos\multiscale_anchor_generator.proto .\object_detection\protos\graph_rewriter.proto 
+#.\object_detection\protos\calibration.proto .\object_detection\protos\flexible_grid_anchor_generator.proto
+python setup.py build
+python setup.py install
+
+python
+import tensorflow as tf
+tf.__version__
+exit()
+
+cd object_detection
+jupyter notebook object_detection_tutorial.ipynb
+
+# python generate_tfrecord.py --csv_input=../../../images_resize/augmented1_train_labels.csv --image_dir=../../../images_resize/augmented/ --output_path=../../../images_resize/tf_records/train_aug1.record
+# python train.py --logtostderr --train_dir=training/train_80_l2_001/ --pipeline_config_path=training/train_80_l2_001/faster_rcnn_inception_v2_pets.config
+# python export_inference_graph.py --input_type image_tensor --pipeline_config_path training/train_80_l2_001/faster_rcnn_inception_v2_pets.config --trained_checkpoint_prefix training/train_80_l2_001/model.ckpt-500000 --output_directory frozen_graphs/inference_graph_train_80_l2_001
+# python prediction.py best_model 0.1 data/tuning/ 
+# python model_performance.py predictions/inference_graph_best_model data/tuning_labels.csv 0.45 0.1
